@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# Debug output
+*.out
+*.pid
+
+# Coverage directory
+coverage/
+
+# Misc
+*.sublime-workspace
+*.sublime-project
+.idea/
+.vscode/ 
