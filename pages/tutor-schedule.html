@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Schedule - Tutor Hub</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/tutor-dashboard.css">
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Back to Home button with Logo -->
+        <div class="back-home-button">
+            <button onclick="goHome()" class="btn-home">
+                <img src="../images/logo3.png" alt="Tutor Hub Logo" class="home-logo" />
+                <span class="home-text">Back to Home</span>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item" data-page="dashboard">
+                <span class="nav-icon">📊</span>
+            </button>
+            <button class="nav-item" data-page="students">
+                <span class="nav-icon">👥</span>
+            </button>
+            <button class="nav-item active" data-page="schedule">
+                <span class="nav-icon">📅</span>
+            </button>
+            <button class="nav-item" data-page="profile">
+                <span class="nav-icon">👤</span>
+            </button>
+        </nav>
+
+        <main id="main-content">
+            <div class="dashboard-container">
+                <!-- Header -->
+                <div class="dashboard-header">
+                    <div class="welcome-section">
+                        <h1 class="welcome-title">My Schedule</h1>
+                        <p class="welcome-subtitle">Manage your availability and sessions</p>
+                    </div>
+                    <div class="schedule-actions">
+                        <button class="btn-primary" onclick="setAvailability()">Set Availability</button>
+                    </div>
+                </div>
+
+                <!-- Calendar Navigation -->
+                <div class="calendar-nav">
+                    <button class="nav-btn" onclick="previousWeek()">←</button>
+                    <div class="current-week">
+                        <h3 id="week-display">This Week</h3>
+                        <p id="date-range">Dec 1-7, 2024</p>
+                    </div>
+                    <button class="nav-btn" onclick="nextWeek()">→</button>
+                </div>
+
+                <!-- Weekly Schedule -->
+                <div class="weekly-schedule">
+                    <div class="schedule-header">
+                        <div class="time-column">Time</div>
+                        <div class="day-column" data-day="monday">Mon</div>
+                        <div class="day-column" data-day="tuesday">Tue</div>
+                        <div class="day-column" data-day="wednesday">Wed</div>
+                        <div class="day-column" data-day="thursday">Thu</div>
+                        <div class="day-column" data-day="friday">Fri</div>
+                        <div class="day-column" data-day="saturday">Sat</div>
+                        <div class="day-column" data-day="sunday">Sun</div>
+                    </div>
+                    
+                    <div class="schedule-grid" id="schedule-grid">
+                        <!-- Schedule slots will be generated here -->
+                    </div>
+                </div>
+
+                <!-- Today's Sessions -->
+                <div class="today-sessions">
+                    <div class="section-header">
+                        <h2>Today's Sessions</h2>
+                        <span class="session-count" id="today-count">0 sessions</span>
+                    </div>
+                    
+                    <div class="sessions-list" id="today-sessions">
+                        <!-- Today's sessions will be loaded here -->
+                    </div>
+                    
+                    <div class="empty-sessions" id="empty-today" style="display: none;">
+                        <div class="empty-icon">📅</div>
+                        <h3>No sessions today</h3>
+                        <p>Enjoy your free time or update your availability!</p>
+                    </div>
+                </div>
+
+                <!-- Upcoming Sessions -->
+                <div class="upcoming-sessions">
+                    <div class="section-header">
+                        <h2>Upcoming Sessions</h2>
+                        <button class="view-all-btn" onclick="viewAllSessions()">View All</button>
+                    </div>
+                    
+                    <div class="sessions-list" id="upcoming-sessions">
+                        <!-- Upcoming sessions will be loaded here -->
+                    </div>
+                    
+                    <div class="empty-sessions" id="empty-upcoming" style="display: none;">
+                        <div class="empty-icon">📅</div>
+                        <h3>No upcoming sessions</h3>
+                        <p>Set your availability to start getting bookings!</p>
+                        <button class="btn-primary" onclick="setAvailability()">Set Availability</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/tutor-schedule.js"></script>
+</body>
+</html> 

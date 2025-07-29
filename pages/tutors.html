@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutors - Tutor Hub</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/tutors.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="search">
+                <span class="nav-icon">🔍</span>
+            </button>
+            <button class="nav-item" data-page="chat">
+                <span class="nav-icon">💬</span>
+            </button>
+            <button class="nav-item" data-page="profile">
+                <span class="nav-icon">👤</span>
+            </button>
+        </nav>
+
+        <main id="main-content">
+            <div class="tutors-container">
+                <!-- Header -->
+                <div class="header">
+                    <button onclick="goBack()" class="btn-back">←</button>
+                    <h2 class="page-title" id="page-title">Math Tutors:</h2>
+                </div>
+
+                <!-- Tutors List -->
+                <div class="tutors-list" id="tutors-list">
+                    <!-- Tutors will be loaded here -->
+                </div>
+
+                <!-- Loading state -->
+                <div id="loading" class="loading-container">
+                    <div class="spinner"></div>
+                    <p>Finding the best tutors for you...</p>
+                </div>
+
+                <!-- Empty state -->
+                <div id="empty-state" class="empty-state" style="display: none;">
+                    <div class="empty-icon">🔍</div>
+                    <h3>No tutors found</h3>
+                    <p>Try adjusting your search criteria or check back later.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/tutors.js"></script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Profile - Tutor Hub</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Back to Home button with Logo -->
+        <div class="back-home-button">
+            <button onclick="goHome()" class="btn-home">
+                <img src="../images/logo3.png" alt="Tutor Hub Logo" class="home-logo" />
+                <span class="home-text">Back to Home</span>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item" data-page="search">
+                <span class="nav-icon">🔍</span>
+            </button>
+            <button class="nav-item" data-page="chat">
+                <span class="nav-icon">💬</span>
+            </button>
+            <button class="nav-item active" data-page="profile">
+                <span class="nav-icon">👤</span>
+            </button>
+        </nav>
+
+        <main id="main-content">
+            <div class="profile-container">
+                <!-- Header -->
+                <div class="header">
+                    <button onclick="goBack()" class="btn-back">←</button>
+                    <h2 class="page-title">Profile</h2>
+                    <button class="btn-edit" onclick="toggleEditMode()" id="edit-btn">
+                        <span class="edit-icon">✏️</span>
+                    </button>
+                </div>
+
+                <!-- Profile Content -->
+                <div class="profile-content">
+                    <!-- Profile Picture Section -->
+                    <div class="profile-picture-section">
+                        <div class="profile-avatar" id="profile-avatar">
+                            <img id="profile-image" src="" alt="Profile" style="display: none;">
+                            <div class="avatar-placeholder" id="avatar-placeholder">
+                                <span id="avatar-initials">TU</span>
+                            </div>
+                        </div>
+                        <button class="change-photo-btn" id="change-photo-btn" style="display: none;">
+                            📷 Change Photo
+                        </button>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="info-section">
+                        <h3 class="section-title">Personal Information</h3>
+                        
+                        <div class="info-item">
+                            <label>First Name</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-firstName">Loading...</span>
+                                <input type="text" class="edit-input" id="edit-firstName" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Last Name</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-lastName">Loading...</span>
+                                <input type="text" class="edit-input" id="edit-lastName" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Email</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-email">Loading...</span>
+                                <input type="email" class="edit-input" id="edit-email" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Phone Number</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-phoneNumber">Not set</span>
+                                <input type="tel" class="edit-input" id="edit-phoneNumber" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Bio</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-bio">Tell students about your teaching experience...</span>
+                                <textarea class="edit-input" id="edit-bio" rows="3" style="display: none;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teaching Information -->
+                    <div class="info-section">
+                        <h3 class="section-title">Teaching Information</h3>
+                        
+                        <div class="info-item">
+                            <label>Experience Years</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-experienceYears">Not set</span>
+                                <input type="number" class="edit-input" id="edit-experienceYears" min="0" max="50" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Hourly Rate ($)</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-hourlyRate">Not set</span>
+                                <input type="number" class="edit-input" id="edit-hourlyRate" min="10" max="200" step="5" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Teaching Subjects</label>
+                            <div class="info-value">
+                                <div class="subjects-display" id="subjects-display">
+                                    <div class="loading-subjects">Loading subjects...</div>
+                                </div>
+                                <div class="subjects-edit" id="subjects-edit" style="display: none;">
+                                    <div class="subjects-grid" id="subjects-grid">
+                                        <!-- Subject checkboxes will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schedule & Availability -->
+                    <div class="info-section">
+                        <h3 class="section-title">Schedule & Availability</h3>
+                        
+                        <div class="schedule-container">
+                            <div class="schedule-display" id="schedule-display">
+                                <div class="loading-schedule">Loading availability...</div>
+                            </div>
+                            <div class="schedule-edit" id="schedule-edit" style="display: none;">
+                                <div class="schedule-grid">
+                                    <div class="day-schedule" data-day="monday">
+                                        <label class="day-label">
+                                            <input type="checkbox" class="day-checkbox" value="monday">
+                                            Monday
+                                        </label>
+                                        <div class="time-inputs">
+                                            <input type="time" class="time-input start-time" placeholder="Start">
+                                            <span class="time-separator">to</span>
+                                            <input type="time" class="time-input end-time" placeholder="End">
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule" data-day="tuesday">
+                                        <label class="day-label">
+                                            <input type="checkbox" class="day-checkbox" value="tuesday">
+                                            Tuesday
+                                        </label>
+                                        <div class="time-inputs">
+                                            <input type="time" class="time-input start-time" placeholder="Start">
+                                            <span class="time-separator">to</span>
+                                            <input type="time" class="time-input end-time" placeholder="End">
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule" data-day="wednesday">
+                                        <label class="day-label">
+                                            <input type="checkbox" class="day-checkbox" value="wednesday">
+                                            Wednesday
+                                        </label>
+                                        <div class="time-inputs">
+                                            <input type="time" class="time-input start-time" placeholder="Start">
+                                            <span class="time-separator">to</span>
+                                            <input type="time" class="time-input end-time" placeholder="End">
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule" data-day="thursday">
+                                        <label class="day-label">
+                                            <input type="checkbox" class="day-checkbox" value="thursday">
+                                            Thursday
+                                        </label>
+                                        <div class="time-inputs">
+                                            <input type="time" class="time-input start-time" placeholder="Start">
+                                            <span class="time-separator">to</span>
+                                            <input type="time" class="time-input end-time" placeholder="End">
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule" data-day="friday">
+                                        <label class="day-label">
+                                            <input type="checkbox" class="day-checkbox" value="friday">
+                                            Friday
+                                        </label>
+                                        <div class="time-inputs">
+                                            <input type="time" class="time-input start-time" placeholder="Start">
+                                            <span class="time-separator">to</span>
+                                            <input type="time" class="time-input end-time" placeholder="End">
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule" data-day="saturday">
+                                        <label class="day-label">
+                                            <input type="checkbox" class="day-checkbox" value="saturday">
+                                            Saturday
+                                        </label>
+                                        <div class="time-inputs">
+                                            <input type="time" class="time-input start-time" placeholder="Start">
+                                            <span class="time-separator">to</span>
+                                            <input type="time" class="time-input end-time" placeholder="End">
+                                        </div>
+                                    </div>
+                                    <div class="day-schedule" data-day="sunday">
+                                        <label class="day-label">
+                                            <input type="checkbox" class="day-checkbox" value="sunday">
+                                            Sunday
+                                        </label>
+                                        <div class="time-inputs">
+                                            <input type="time" class="time-input start-time" placeholder="Start">
+                                            <span class="time-separator">to</span>
+                                            <input type="time" class="time-input end-time" placeholder="End">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Settings -->
+                    <div class="info-section">
+                        <h3 class="section-title">Account Settings</h3>
+                        
+                        <div class="info-item">
+                            <label>Change Password</label>
+                            <div class="info-value">
+                                <button class="action-btn" onclick="showPasswordChange()" id="show-password-btn">
+                                    Change Password
+                                </button>
+                                <div class="password-change-form" id="password-change-form" style="display: none;">
+                                    <input type="password" placeholder="Current Password" id="current-password" class="password-input">
+                                    <input type="password" placeholder="New Password" id="new-password" class="password-input">
+                                    <input type="password" placeholder="Confirm New Password" id="confirm-password" class="password-input">
+                                    <div class="password-actions">
+                                        <button class="btn-cancel" onclick="hidePasswordChange()">Cancel</button>
+                                        <button class="btn-save" onclick="changePassword()">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Language</label>
+                            <div class="info-value">
+                                <span class="display-value">English</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="profile-actions" id="profile-actions" style="display: none;">
+                        <button class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+                        <button class="btn-save" onclick="saveProfile()">Save Changes</button>
+                    </div>
+
+                    <!-- Logout Button -->
+                    <div class="logout-section">
+                        <button class="btn-logout" onclick="logout()">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Overlay -->
+                <div id="loading-overlay" class="loading-overlay">
+                    <div class="spinner"></div>
+                    <p>Updating profile...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/profile-tutor.js"></script>
+</body>
+</html>

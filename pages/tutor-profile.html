@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Profile - Tutor Hub</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/tutor-profile.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item" data-page="search">
+                <span class="nav-icon">🔍</span>
+            </button>
+            <button class="nav-item active" data-page="chat">
+                <span class="nav-icon">💬</span>
+            </button>
+            <button class="nav-item" data-page="profile">
+                <span class="nav-icon">👤</span>
+            </button>
+        </nav>
+
+        <main id="main-content">
+            <div class="profile-container">
+                <!-- Header -->
+                <div class="header">
+                    <button onclick="goBack()" class="btn-back">←</button>
+                </div>
+
+                <!-- Profile Content -->
+                <div class="profile-content" id="profile-content">
+                    <!-- Loading state -->
+                    <div id="loading" class="loading-container">
+                        <div class="spinner"></div>
+                        <p>Loading tutor profile...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/tutor-profile.js"></script>
+</body>
+</html>

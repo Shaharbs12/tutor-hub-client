@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Students - Tutor Hub</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/tutor-dashboard.css">
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Back to Home button with Logo -->
+        <div class="back-home-button">
+            <button onclick="goHome()" class="btn-home">
+                <img src="../images/logo3.png" alt="Tutor Hub Logo" class="home-logo" />
+                <span class="home-text">Back to Home</span>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item" data-page="dashboard">
+                <span class="nav-icon">📊</span>
+            </button>
+            <button class="nav-item active" data-page="students">
+                <span class="nav-icon">👥</span>
+            </button>
+            <button class="nav-item" data-page="schedule">
+                <span class="nav-icon">📅</span>
+            </button>
+            <button class="nav-item" data-page="profile">
+                <span class="nav-icon">👤</span>
+            </button>
+        </nav>
+
+        <main id="main-content">
+            <div class="dashboard-container">
+                <!-- Header -->
+                <div class="dashboard-header">
+                    <div class="welcome-section">
+                        <h1 class="welcome-title">My Students</h1>
+                        <p class="welcome-subtitle">Manage your student relationships</p>
+                    </div>
+                    <div class="student-count">
+                        <span class="count-number" id="student-count">0</span>
+                        <span class="count-label">Students</span>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="search-filter-section">
+                    <div class="search-box">
+                        <input type="text" id="student-search" placeholder="Search students..." class="search-input">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="recent">Recent</button>
+                    </div>
+                </div>
+
+                <!-- Students List -->
+                <div class="students-section">
+                    <div class="students-list" id="students-list">
+                        <!-- Students will be loaded here -->
+                    </div>
+                    
+                    <div class="empty-students" id="empty-students" style="display: none;">
+                        <div class="empty-icon">👥</div>
+                        <h3>No students yet</h3>
+                        <p>Start by updating your profile and subjects to attract students!</p>
+                        <button class="btn-primary" onclick="editProfile()">Edit Profile</button>
+                    </div>
+                </div>
+
+                <!-- Student Details Modal -->
+                <div id="student-modal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 id="modal-student-name">Student Name</h2>
+                            <button class="modal-close" onclick="closeStudentModal()">×</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="student-details">
+                                <div class="detail-item">
+                                    <label>Subject:</label>
+                                    <span id="modal-subject">Math</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Total Sessions:</label>
+                                    <span id="modal-sessions">12</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Last Session:</label>
+                                    <span id="modal-last-session">2 days ago</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Rating:</label>
+                                    <span id="modal-rating">⭐ 4.8</span>
+                                </div>
+                            </div>
+                            <div class="modal-actions">
+                                <button class="btn-primary" onclick="startSessionWithStudent()">Start Session</button>
+                                <button class="btn-secondary" onclick="messageStudent()">Send Message</button>
+                                <button class="btn-secondary" onclick="viewHistory()">View History</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/tutor-students.js"></script>
+</body>
+</html> 

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chats - Tutor Hub</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/chat-list.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item" data-page="search">
+                <span class="nav-icon">🔍</span>
+            </button>
+            <button class="nav-item active" data-page="chat">
+                <span class="nav-icon">💬</span>
+            </button>
+            <button class="nav-item" data-page="profile">
+                <span class="nav-icon">👤</span>
+            </button>
+        </nav>
+
+        <main id="main-content">
+            <div class="chat-list-container">
+                <!-- Header -->
+                <div class="header">
+                    <button onclick="goBack()" class="btn-back">←</button>
+                    <h2 class="page-title">Chat</h2>
+                </div>
+
+                <!-- Conversations List -->
+                <div class="conversations-list" id="conversations-list">
+                    <!-- Conversations will be loaded here -->
+                </div>
+
+                <!-- Loading state -->
+                <div id="loading" class="loading-container">
+                    <div class="spinner"></div>
+                    <p>Loading conversations...</p>
+                </div>
+
+                <!-- Empty state -->
+                <div id="empty-state" class="empty-state" style="display: none;">
+                    <div class="empty-icon">💬</div>
+                    <h3>No conversations yet</h3>
+                    <p>Start chatting with tutors to see your conversations here.</p>
+                    <button class="btn-primary" onclick="window.location.href='subjects.html'">
+                        Find Tutors
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/chat-list.js"></script>
+</body>
+</html>

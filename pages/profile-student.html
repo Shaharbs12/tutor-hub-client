@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - Tutor Hub</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Back to Home button with Logo -->
+        <div class="back-home-button">
+            <button onclick="goHome()" class="btn-home">
+                <img src="../images/logo3.png" alt="Tutor Hub Logo" class="home-logo" />
+                <span class="home-text">Back to Home</span>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item" data-page="search">
+                <span class="nav-icon">🔍</span>
+            </button>
+            <button class="nav-item" data-page="chat">
+                <span class="nav-icon">💬</span>
+            </button>
+            <button class="nav-item active" data-page="profile">
+                <span class="nav-icon">👤</span>
+            </button>
+        </nav>
+
+        <main id="main-content">
+            <div class="profile-container">
+                <!-- Header -->
+                <div class="header">
+                    <button onclick="goBack()" class="btn-back">←</button>
+                    <h2 class="page-title">Profile</h2>
+                    <button class="btn-edit" onclick="toggleEditMode()" id="edit-btn">
+                        <span class="edit-icon">✏️</span>
+                    </button>
+                </div>
+
+                <!-- Profile Content -->
+                <div class="profile-content">
+                    <!-- Profile Picture Section -->
+                    <div class="profile-picture-section">
+                        <div class="profile-avatar" id="profile-avatar">
+                            <img id="profile-image" src="" alt="Profile" style="display: none;">
+                            <div class="avatar-placeholder" id="avatar-placeholder">
+                                <span id="avatar-initials">ST</span>
+                            </div>
+                        </div>
+                        <button class="change-photo-btn" id="change-photo-btn" style="display: none;">
+                            📷 Change Photo
+                        </button>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="info-section">
+                        <h3 class="section-title">Personal Information</h3>
+                        
+                        <div class="info-item">
+                            <label>First Name</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-firstName">Loading...</span>
+                                <input type="text" class="edit-input" id="edit-firstName" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Last Name</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-lastName">Loading...</span>
+                                <input type="text" class="edit-input" id="edit-lastName" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Email</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-email">Loading...</span>
+                                <input type="email" class="edit-input" id="edit-email" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Phone Number</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-phoneNumber">Not set</span>
+                                <input type="tel" class="edit-input" id="edit-phoneNumber" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Bio</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-bio">Tell tutors about your learning goals...</span>
+                                <textarea class="edit-input" id="edit-bio" rows="3" style="display: none;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Learning Preferences -->
+                    <div class="info-section">
+                        <h3 class="section-title">Learning Preferences</h3>
+                        
+                        <div class="info-item">
+                            <label>Grade Level</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-gradeLevel">Not set</span>
+                                <select class="edit-input" id="edit-gradeLevel" style="display: none;">
+                                    <option value="">Select grade level</option>
+                                    <option value="elementary">Elementary (K-5)</option>
+                                    <option value="middle">Middle School (6-8)</option>
+                                    <option value="high">High School (9-12)</option>
+                                    <option value="college">College</option>
+                                    <option value="adult">Adult Learning</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Learning Style</label>
+                            <div class="info-value">
+                                <span class="display-value" id="display-learningStyle">Not set</span>
+                                <select class="edit-input" id="edit-learningStyle" style="display: none;">
+                                    <option value="">Select learning style</option>
+                                    <option value="visual">Visual</option>
+                                    <option value="auditory">Auditory</option>
+                                    <option value="kinesthetic">Kinesthetic</option>
+                                    <option value="reading">Reading/Writing</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Preferred Subjects</label>
+                            <div class="info-value">
+                                <div class="subjects-display" id="subjects-display">
+                                    <div class="loading-subjects">Loading subjects...</div>
+                                </div>
+                                <div class="subjects-edit" id="subjects-edit" style="display: none;">
+                                    <div class="subjects-grid" id="subjects-grid">
+                                        <!-- Subject checkboxes will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Settings -->
+                    <div class="info-section">
+                        <h3 class="section-title">Account Settings</h3>
+                        
+                        <div class="info-item">
+                            <label>Change Password</label>
+                            <div class="info-value">
+                                <button class="action-btn" onclick="showPasswordChange()" id="show-password-btn">
+                                    Change Password
+                                </button>
+                                <div class="password-change-form" id="password-change-form" style="display: none;">
+                                    <input type="password" placeholder="Current Password" id="current-password" class="password-input">
+                                    <input type="password" placeholder="New Password" id="new-password" class="password-input">
+                                    <input type="password" placeholder="Confirm New Password" id="confirm-password" class="password-input">
+                                    <div class="password-actions">
+                                        <button class="btn-cancel" onclick="hidePasswordChange()">Cancel</button>
+                                        <button class="btn-save" onclick="changePassword()">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Language</label>
+                            <div class="info-value">
+                                <span class="display-value">English</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="profile-actions" id="profile-actions" style="display: none;">
+                        <button class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+                        <button class="btn-save" onclick="saveProfile()">Save Changes</button>
+                    </div>
+
+                    <!-- Logout Button -->
+                    <div class="logout-section">
+                        <button class="btn-logout" onclick="logout()">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Overlay -->
+                <div id="loading-overlay" class="loading-overlay">
+                    <div class="spinner"></div>
+                    <p>Updating profile...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/profile-student.js"></script>
+</body>
+</html>
