@@ -1,31 +1,49 @@
 // Tutors page functionality
-
-const Tutors = {
+const TutorsPage = {
     tutors: [],
     currentSubject: null,
     
     init() {
-        this.getSubjectFromURL();
-        this.updatePageTitle();
+        this.loadSubjectFromURL();
         this.loadTutors();
         this.bindEvents();
-        console.log('Tutors page initialized for subject:', this.currentSubject);
+        console.log('Tutors page initialized');
     },
     
-    getSubjectFromURL() {
+    loadSubjectFromURL() {
+        // Get subject from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        this.currentSubject = {
-            id: urlParams.get('subject'),
-            name: urlParams.get('name') || 'Unknown'
-        };
+        const subjectId = urlParams.get('subject');
+        
+        if (subjectId) {
+            // Get subject info from localStorage (set by subjects page)
+            const subjectInfo = localStorage.getItem('selectedSubject');
+            if (subjectInfo) {
+                this.currentSubject = JSON.parse(subjectInfo);
+            }
+        }
+        
+        this.updatePageTitle();
     },
     
     updatePageTitle() {
         const titleElement = document.getElementById('page-title');
-        if (titleElement && this.currentSubject) {
-            const subjectName = this.capitalizeFirst(this.currentSubject.name);
-            titleElement.textContent = `${subjectName} Tutors:`;
+        const welcomeMessage = document.getElementById('welcome-message');
+        
+        if (titleElement) {
+            if (this.currentSubject && this.currentSubject.id) {
+                const subjectName = this.capitalizeFirst(this.currentSubject.name);
+                titleElement.textContent = `${subjectName} Tutors:`;
+                if (welcomeMessage) welcomeMessage.style.display = 'none'; // Hide welcome message
+            } else {
+                titleElement.textContent = 'Available Tutors:'; // Show all tutors
+                if (welcomeMessage) welcomeMessage.style.display = 'block'; // Show welcome message
+            }
         }
+    },
+    
+    capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     },
     
     async loadTutors() {
@@ -34,95 +52,36 @@ const Tutors = {
             
             let response;
             if (this.currentSubject && this.currentSubject.id) {
-                // Get tutors for specific subject
-                response = await API.get(`/subjects/${this.currentSubject.id}/tutors`);
-                this.tutors = response.tutors || [];
+                try {
+                    // Try to get tutors for specific subject
+                    response = await API.get(`/subjects/${this.currentSubject.id}/tutors`);
+                    this.tutors = response.tutors || [];
+                } catch (error) {
+                    console.log('Subject-specific endpoint failed, falling back to all tutors');
+                    // Fallback: get all tutors and filter on frontend
+                    response = await API.get('/tutors');
+                    const allTutors = response.tutors || [];
+                    
+                    // Filter tutors by subject (this is a simple check, in real app you'd check the subjects array)
+                    // For now, we'll show all tutors since the subject relationship might not be working
+                    this.tutors = allTutors;
+                }
             } else {
                 // Get all tutors
                 response = await API.get('/tutors');
                 this.tutors = response.tutors || [];
             }
             
-            // If no tutors from API, use mock data
-            if (this.tutors.length === 0) {
-                this.tutors = this.getMockTutors();
-            }
-            
             this.renderTutors();
             
         } catch (error) {
             console.error('Failed to load tutors:', error);
-            // Show mock data on error
-            this.tutors = this.getMockTutors();
+            this.showMessage('Failed to load tutors. Please try again.', 'error');
+            this.tutors = [];
             this.renderTutors();
         } finally {
             this.showLoading(false);
         }
-    },
-    
-    getMockTutors() {
-        const subjectName = this.currentSubject?.name?.toLowerCase();
-        
-        // Sample tutors based on Figma designs
-        const allTutors = [
-            {
-                id: 1,
-                user: {
-                    id: 1,
-                    firstName: 'Ms.',
-                    lastName: 'Margarita',
-                    city: 'Tel Aviv',
-                    profileImage: null
-                },
-                rating: 5.0,
-                totalReviews: 45,
-                hourlyRate: 150,
-                subjects: [{ name: 'Math' }],
-                isVerified: true
-            },
-            {
-                id: 2,
-                user: {
-                    id: 2,
-                    firstName: 'Mr.',
-                    lastName: 'Shahrukh',
-                    city: 'Jerusalem',
-                    profileImage: null
-                },
-                rating: 3.5,
-                totalReviews: 28,
-                hourlyRate: 120,
-                subjects: [{ name: 'English' }],
-                isVerified: true
-            },
-            {
-                id: 3,
-                user: {
-                    id: 3,
-                    firstName: 'Mr.',
-                    lastName: 'Max',
-                    city: 'Haifa',
-                    profileImage: null
-                },
-                rating: 2.0,
-                totalReviews: 12,
-                hourlyRate: 200,
-                subjects: [{ name: 'Programming' }],
-                isVerified: false
-            }
-        ];
-        
-        // Filter by subject if specified
-        if (subjectName && subjectName !== 'unknown') {
-            return allTutors.filter(tutor => 
-                tutor.subjects.some(subject => 
-                    subject.name.toLowerCase().includes(subjectName) ||
-                    subjectName.includes(subject.name.toLowerCase())
-                )
-            );
-        }
-        
-        return allTutors;
     },
     
     renderTutors() {
@@ -148,15 +107,10 @@ const Tutors = {
     createTutorCard(tutor, index) {
         const card = document.createElement('div');
         card.className = 'tutor-card';
-        if (tutor.isVerified) card.classList.add('verified');
-        
-        card.dataset.tutorId = tutor.id || tutor.user?.id;
+        card.dataset.tutorId = tutor.id;
         
         // Generate avatar initial
         const initial = tutor.user?.firstName?.charAt(0) || '👤';
-        
-        // Generate star rating
-        const stars = this.generateStars(tutor.rating || 0);
         
         // Format subjects
         const subjects = tutor.subjects || [];
@@ -164,26 +118,20 @@ const Tutors = {
             `<span class="subject-tag">${subject.name}</span>`
         ).join('');
         
+        // Format rating
+        const rating = tutor.rating || 0;
+        const ratingStars = '⭐'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+        
         card.innerHTML = `
-            <div class="tutor-header">
-                <div class="tutor-avatar">${initial}</div>
-                <div class="tutor-info">
-                    <h3 class="tutor-name">${tutor.user?.firstName} ${tutor.user?.lastName}</h3>
-                    <div class="tutor-rating">
-                        <div class="stars">${stars}</div>
-                        <span class="rating-text">(${tutor.totalReviews || 0} reviews)</span>
-                    </div>
-                    <div class="tutor-location">📍 ${tutor.user?.city || 'City Live'}</div>
-                </div>
-            </div>
-            <div class="tutor-details">
+            <div class="tutor-avatar">${initial}</div>
+            <div class="tutor-info">
+                <div class="tutor-name">${tutor.user?.firstName} ${tutor.user?.lastName}</div>
+                <div class="tutor-location">📍 ${tutor.user?.city || 'Location not set'}</div>
+                <div class="tutor-rating">${ratingStars} ${rating.toFixed(1)}</div>
                 <div class="tutor-subjects">
-                    ${subjectTags}
+                    ${subjectTags || '<span class="subject-tag">No subjects listed</span>'}
                 </div>
-                <div class="tutor-rate">
-                    <span class="rate-amount">₪${tutor.hourlyRate || 0}</span>
-                    <span class="rate-unit">per hour</span>
-                </div>
+                <div class="tutor-bio">${tutor.bio || 'No bio available'}</div>
             </div>
         `;
         
@@ -191,31 +139,6 @@ const Tutors = {
         card.style.animationDelay = `${(index + 1) * 0.1}s`;
         
         return card;
-    },
-    
-    generateStars(rating) {
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 >= 0.5;
-        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-        
-        let stars = '';
-        
-        // Full stars
-        for (let i = 0; i < fullStars; i++) {
-            stars += '<span class="star">★</span>';
-        }
-        
-        // Half star
-        if (hasHalfStar) {
-            stars += '<span class="star">☆</span>'; // You could use a half-star character
-        }
-        
-        // Empty stars
-        for (let i = 0; i < emptyStars; i++) {
-            stars += '<span class="star empty">☆</span>';
-        }
-        
-        return stars;
     },
     
     bindEvents() {
@@ -227,18 +150,17 @@ const Tutors = {
             }
         });
         
-        // Navigation events
+        // Back to subjects button
         document.addEventListener('click', (e) => {
-            const navItem = e.target.closest('.nav-item');
-            if (navItem) {
-                this.handleNavigation(navItem.dataset.page);
+            if (e.target.closest('.back-to-subjects')) {
+                this.goBackToSubjects();
             }
         });
     },
     
     selectTutor(card) {
         const tutorId = card.dataset.tutorId;
-        const tutor = this.tutors.find(t => (t.id || t.user?.id).toString() === tutorId);
+        const tutor = this.tutors.find(t => t.id.toString() === tutorId);
         
         if (tutor) {
             console.log('Tutor selected:', tutor);
@@ -247,56 +169,74 @@ const Tutors = {
             card.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 card.style.transform = '';
-                this.navigateToTutorProfile(tutorId);
+                this.startChatWithTutor(tutor);
             }, 150);
         }
     },
     
-    navigateToTutorProfile(tutorId) {
-        window.location.href = `tutor-profile.html?id=${tutorId}`;
+    startChatWithTutor(tutor) {
+        // Store tutor info for chat
+        localStorage.setItem('chatTutor', JSON.stringify({
+            id: tutor.id,
+            name: `${tutor.user?.firstName} ${tutor.user?.lastName}`,
+            avatar: tutor.user?.firstName?.charAt(0) || '👤'
+        }));
+        
+        // Navigate to chat
+        window.location.href = `chat.html?tutor=${tutor.id}`;
     },
     
-    handleNavigation(page) {
-        console.log('Navigating to:', page);
-        
-        switch (page) {
-            case 'search':
-                window.location.href = 'subjects.html';
-                break;
-            case 'chat':
-                window.location.href = 'chat.html';
-                break;
-            case 'profile':
-                window.location.href = 'profile.html';
-                break;
-        }
+    goBackToSubjects() {
+        // Clear selected subject
+        localStorage.removeItem('selectedSubject');
+        window.location.href = 'subjects.html';
     },
     
     showLoading(show) {
         const loading = document.getElementById('loading');
-        const list = document.getElementById('tutors-list');
+        const mainContent = document.querySelector('.tutors-container');
         
         if (show) {
-            loading.style.display = 'flex';
-            list.style.display = 'none';
+            if (loading) loading.style.display = 'flex';
+            if (mainContent) mainContent.style.opacity = '0.5';
         } else {
-            loading.style.display = 'none';
-            list.style.display = 'flex';
+            if (loading) loading.style.display = 'none';
+            if (mainContent) mainContent.style.opacity = '1';
         }
     },
     
-    capitalizeFirst(str) {
-        if (!str) return '';
-        return str.charAt(0).toUpperCase() + str.slice(1);
+    showMessage(message, type) {
+        // Create message element
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message`;
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#2ed573' : '#3742fa'};
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideInFromTop 0.3s ease;
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, 3000);
     }
 };
 
-// Global functions
-function goBack() {
-    window.location.href = 'subjects.html';
-}
-
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    Tutors.init();
+    TutorsPage.init();
 });

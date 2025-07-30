@@ -102,7 +102,7 @@ const Register = {
                     if (this.userType === 'tutor') {
                         window.location.href = 'tutor-dashboard.html';
                     } else {
-                        window.location.href = 'subjects.html';
+                        window.location.href = 'subjects.html'; // Redirect student to subjects page
                     }
                 }, 2000);
             }

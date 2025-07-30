@@ -115,3 +115,53 @@
     opacity: 0.6;
     pointer-events: none;
 }
+
+/* Logout Button Styles */
+.logout-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #ff4757, #ff3742);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logout-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+    background: linear-gradient(135deg, #ff3742, #ff2f3a);
+}
+
+.logout-button:active {
+    transform: translateY(0);
+}
+
+.logout-icon {
+    font-size: 16px;
+}
+
+/* Hide logout button on home page */
+body.home-page .logout-button {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .logout-button {
+        top: 15px;
+        right: 15px;
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}

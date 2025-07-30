@@ -1,226 +1,107 @@
-// Tutor Dashboard JavaScript
+// Tutor Dashboard functionality
 
 const TutorDashboard = {
     currentUser: null,
-    stats: {
-        totalStudents: 0,
-        monthlyEarnings: 0,
-        rating: 4.8,
-        sessionsThisWeek: 0
-    },
-    todaySchedule: [],
-    recentStudents: [],
+    students: [],
     
     init() {
-        this.loadUserData();
-        this.loadDashboardData();
+        this.loadUserInfo();
+        this.loadStudents();
         this.bindEvents();
-        this.setupNavigation();
         console.log('Tutor Dashboard initialized');
     },
     
-    async loadUserData() {
+    async loadUserInfo() {
         try {
-            const user = Utils.getCurrentUser();
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
+            const user = JSON.parse(localStorage.getItem('tutorHub_user'));
+            if (user) {
+                this.currentUser = user;
+                document.getElementById('user-name').textContent = `${user.firstName} ${user.lastName}`;
             }
-            
-            this.currentUser = user;
-            document.getElementById('tutor-name').textContent = user.firstName || 'Tutor';
-            
         } catch (error) {
-            console.error('Error loading user data:', error);
-            Utils.showError('Failed to load user data');
+            console.error('Error loading user info:', error);
         }
     },
     
-    async loadDashboardData() {
+    async loadStudents() {
         try {
-            // Load stats
-            await this.loadStats();
+            this.showLoading(true);
             
-            // Load today's schedule
-            await this.loadTodaySchedule();
+            const response = await API.get('/students');
+            this.students = response.students || [];
             
-            // Load recent students
-            await this.loadRecentStudents();
+            this.updateStats();
+            this.renderStudents();
             
         } catch (error) {
-            console.error('Error loading dashboard data:', error);
-            Utils.showError('Failed to load dashboard data');
+            console.error('Failed to load students:', error);
+            this.showMessage('Failed to load students. Please try again.', 'error');
+            this.students = [];
+            this.renderStudents();
+        } finally {
+            this.showLoading(false);
         }
     },
     
-    async loadStats() {
-        try {
-            // In a real app, this would be an API call
-            // For now, using mock data
-            this.stats = {
-                totalStudents: 12,
-                monthlyEarnings: 2400,
-                rating: 4.8,
-                sessionsThisWeek: 8
-            };
-            
-            this.updateStatsDisplay();
-            
-        } catch (error) {
-            console.error('Error loading stats:', error);
-        }
-    },
-    
-    updateStatsDisplay() {
-        document.getElementById('total-students').textContent = this.stats.totalStudents;
-        document.getElementById('monthly-earnings').textContent = `$${this.stats.monthlyEarnings}`;
-        document.getElementById('rating').textContent = this.stats.rating;
-        document.getElementById('sessions-this-week').textContent = this.stats.sessionsThisWeek;
-    },
-    
-    async loadTodaySchedule() {
-        try {
-            // Mock schedule data
-            this.todaySchedule = [
-                {
-                    id: 1,
-                    time: '09:00',
-                    studentName: 'Sarah Johnson',
-                    subject: 'Math',
-                    status: 'upcoming'
-                },
-                {
-                    id: 2,
-                    time: '11:30',
-                    studentName: 'Mike Chen',
-                    subject: 'Physics',
-                    status: 'ongoing'
-                },
-                {
-                    id: 3,
-                    time: '14:00',
-                    studentName: 'Emma Davis',
-                    subject: 'English',
-                    status: 'upcoming'
-                }
-            ];
-            
-            this.renderTodaySchedule();
-            
-        } catch (error) {
-            console.error('Error loading schedule:', error);
-        }
-    },
-    
-    renderTodaySchedule() {
-        const scheduleContainer = document.getElementById('today-schedule');
-        const emptySchedule = document.getElementById('empty-schedule');
+    updateStats() {
+        // Update stats based on real data
+        document.getElementById('total-students').textContent = this.students.length;
         
-        if (this.todaySchedule.length === 0) {
-            scheduleContainer.style.display = 'none';
-            emptySchedule.style.display = 'block';
+        // For now, use placeholder data for other stats
+        // In a real app, these would come from the backend
+        document.getElementById('avg-rating').textContent = '4.8';
+        document.getElementById('total-earnings').textContent = '₪1,250';
+    },
+    
+    renderStudents() {
+        const container = document.getElementById('students-list');
+        const emptyState = document.getElementById('empty-state');
+        
+        if (this.students.length === 0) {
+            container.style.display = 'none';
+            emptyState.style.display = 'flex';
             return;
         }
         
-        scheduleContainer.style.display = 'block';
-        emptySchedule.style.display = 'none';
+        container.style.display = 'flex';
+        emptyState.style.display = 'none';
+        container.innerHTML = '';
         
-        scheduleContainer.innerHTML = '';
-        
-        this.todaySchedule.forEach(session => {
-            const scheduleItem = this.createScheduleItem(session);
-            scheduleContainer.appendChild(scheduleItem);
+        this.students.forEach((student, index) => {
+            const card = this.createStudentCard(student, index);
+            container.appendChild(card);
         });
     },
     
-    createScheduleItem(session) {
-        const item = document.createElement('div');
-        item.className = 'schedule-item';
-        item.innerHTML = `
-            <div class="schedule-time">${session.time}</div>
-            <div class="schedule-info">
-                <div class="schedule-student">${session.studentName}</div>
-                <div class="schedule-subject">${session.subject}</div>
-            </div>
-            <div class="schedule-status ${session.status}">${session.status}</div>
-        `;
+    createStudentCard(student, index) {
+        const card = document.createElement('div');
+        card.className = 'student-card';
+        card.dataset.studentId = student.id;
         
-        return item;
-    },
-    
-    async loadRecentStudents() {
-        try {
-            // Mock students data
-            this.recentStudents = [
-                {
-                    id: 1,
-                    name: 'Sarah Johnson',
-                    subject: 'Math',
-                    rating: 5,
-                    lastSession: '2 days ago'
-                },
-                {
-                    id: 2,
-                    name: 'Mike Chen',
-                    subject: 'Physics',
-                    rating: 4,
-                    lastSession: '1 day ago'
-                },
-                {
-                    id: 3,
-                    name: 'Emma Davis',
-                    subject: 'English',
-                    rating: 5,
-                    lastSession: '3 days ago'
-                }
-            ];
-            
-            this.renderRecentStudents();
-            
-        } catch (error) {
-            console.error('Error loading students:', error);
-        }
-    },
-    
-    renderRecentStudents() {
-        const studentsContainer = document.getElementById('recent-students');
-        const emptyStudents = document.getElementById('empty-students');
+        // Generate avatar initial
+        const initial = student.user?.firstName?.charAt(0) || '👤';
         
-        if (this.recentStudents.length === 0) {
-            studentsContainer.style.display = 'none';
-            emptyStudents.style.display = 'block';
-            return;
-        }
+        // Format subjects
+        const subjects = student.preferredSubjects || [];
+        const subjectTags = subjects.map(subject => 
+            `<span class="subject-tag">${subject.name}</span>`
+        ).join('');
         
-        studentsContainer.style.display = 'block';
-        emptyStudents.style.display = 'none';
-        
-        studentsContainer.innerHTML = '';
-        
-        this.recentStudents.forEach(student => {
-            const studentItem = this.createStudentItem(student);
-            studentsContainer.appendChild(studentItem);
-        });
-    },
-    
-    createStudentItem(student) {
-        const item = document.createElement('div');
-        item.className = 'student-item';
-        
-        const initials = student.name.split(' ').map(n => n[0]).join('');
-        
-        item.innerHTML = `
-            <div class="student-avatar">${initials}</div>
+        card.innerHTML = `
+            <div class="student-avatar">${initial}</div>
             <div class="student-info">
-                <div class="student-name">${student.name}</div>
-                <div class="student-subject">${student.subject} • ${student.lastSession}</div>
-            </div>
-            <div class="student-rating">
-                ⭐ ${student.rating}
+                <div class="student-name">${student.user?.firstName} ${student.user?.lastName}</div>
+                <div class="student-location">📍 ${student.user?.city || 'Location not set'}</div>
+                <div class="student-subjects">
+                    ${subjectTags || '<span class="subject-tag">No subjects selected</span>'}
+                </div>
             </div>
         `;
         
-        return item;
+        // Add animation delay
+        card.style.animationDelay = `${(index + 1) * 0.1}s`;
+        
+        return card;
     },
     
     bindEvents() {
@@ -231,73 +112,107 @@ const TutorDashboard = {
                 this.handleNavigation(navItem.dataset.page);
             }
         });
+        
+        // Student card clicks
+        document.addEventListener('click', (e) => {
+            const card = e.target.closest('.student-card');
+            if (card) {
+                this.selectStudent(card);
+            }
+        });
     },
     
-    setupNavigation() {
-        // Set active navigation item
-        const currentPage = 'dashboard';
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        document.querySelector(`[data-page="${currentPage}"]`).classList.add('active');
+    selectStudent(card) {
+        const studentId = card.dataset.studentId;
+        const student = this.students.find(s => s.id.toString() === studentId);
+        
+        if (student) {
+            console.log('Student selected:', student);
+            
+            // Visual feedback
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                card.style.transform = '';
+                this.startChatWithStudent(student);
+            }, 150);
+        }
+    },
+    
+    startChatWithStudent(student) {
+        // Store student info for chat
+        localStorage.setItem('chatStudent', JSON.stringify({
+            id: student.id,
+            name: `${student.user?.firstName} ${student.user?.lastName}`,
+            avatar: student.user?.firstName?.charAt(0) || '👤'
+        }));
+        
+        // Navigate to chat
+        window.location.href = `chat.html?student=${student.id}`;
     },
     
     handleNavigation(page) {
-        switch(page) {
+        console.log('Navigating to:', page);
+        
+        switch (page) {
             case 'dashboard':
                 // Already on dashboard
                 break;
             case 'students':
-                window.location.href = 'tutor-students.html';
+                // Could navigate to a detailed students page
+                console.log('Students page - already showing students');
                 break;
-            case 'schedule':
-                window.location.href = 'tutor-schedule.html';
+            case 'chat':
+                window.location.href = 'chat-list.html';
                 break;
             case 'profile':
                 window.location.href = 'profile-tutor.html';
                 break;
-            default:
-                console.warn('Unknown navigation page:', page);
         }
+    },
+    
+    showLoading(show) {
+        const loading = document.getElementById('loading');
+        const mainContent = document.querySelector('.dashboard-container');
+        
+        if (show) {
+            loading.style.display = 'flex';
+            mainContent.style.opacity = '0.5';
+        } else {
+            loading.style.display = 'none';
+            mainContent.style.opacity = '1';
+        }
+    },
+    
+    showMessage(message, type) {
+        // Create message element
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message`;
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: ${type === 'error' ? '#ff4757' : type === 'success' ? '#2ed573' : '#3742fa'};
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideInFromTop 0.3s ease;
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, 3000);
     }
 };
-
-// Global functions for quick actions
-function startSession() {
-    // In a real app, this would start a video session
-    Utils.showSuccess('Starting session...');
-    setTimeout(() => {
-        window.location.href = 'tutor-session.html';
-    }, 1000);
-}
-
-function updateAvailability() {
-    window.location.href = 'tutor-availability.html';
-}
-
-function viewMessages() {
-    window.location.href = 'chat-list.html';
-}
-
-function viewEarnings() {
-    window.location.href = 'tutor-earnings.html';
-}
-
-function viewFullSchedule() {
-    window.location.href = 'tutor-schedule.html';
-}
-
-function viewAllStudents() {
-    window.location.href = 'tutor-students.html';
-}
-
-function editProfile() {
-    window.location.href = 'profile-tutor.html';
-}
-
-function goHome() {
-    window.location.href = '../index.html';
-}
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {

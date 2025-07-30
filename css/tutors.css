@@ -10,10 +10,45 @@
     position: relative;
 }
 
-.header {
+/* Back to Subjects Button */
+.back-to-subjects {
+    background: linear-gradient(135deg, #4A90E2, #7B68EE);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
     display: flex;
     align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+}
+
+.back-to-subjects:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+    background: linear-gradient(135deg, #3a7bc8, #6a5acd);
+}
+
+.back-to-subjects:active {
+    transform: translateY(0);
+}
+
+.back-icon {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Update header layout */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
+    flex-wrap: wrap;
     gap: 15px;
 }
 
@@ -39,6 +74,32 @@
     font-weight: 600;
     color: #2E5C8A;
     margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+/* Welcome Message */
+.welcome-message {
+    background: linear-gradient(135deg, #4A90E2, #7B68EE);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: slideInFromTop 0.5s ease;
+}
+
+.welcome-content h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.welcome-content p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
 }
 
 /* Tutors List */
