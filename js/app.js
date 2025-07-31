@@ -21,9 +21,19 @@ const API = {
             config.headers['Authorization'] = `Bearer ${token}`;
         }
         
+        console.log('API Request:', {
+            url: url,
+            method: config.method || 'GET',
+            headers: config.headers
+        });
+        
         try {
             const response = await fetch(url, config);
+            console.log('API Response status:', response.status);
+            console.log('API Response headers:', response.headers);
+            
             const data = await response.json();
+            console.log('API Response data:', data);
             
             if (!response.ok) {
                 throw new Error(data.error || 'Request failed');

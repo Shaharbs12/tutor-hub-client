@@ -12,14 +12,18 @@ const SubjectsPage = {
     async loadSubjects() {
         try {
             this.showLoading(true);
+            console.log('🔄 Loading subjects from API...');
             
             const response = await API.get('/subjects');
+            console.log('📡 API Response:', response);
+            
             this.subjects = response.subjects || [];
+            console.log(`✅ Loaded ${this.subjects.length} subjects:`, this.subjects);
             
             this.renderSubjects();
             
         } catch (error) {
-            console.error('Failed to load subjects:', error);
+            console.error('❌ Failed to load subjects:', error);
             this.showMessage('Failed to load subjects. Please try again.', 'error');
             this.subjects = [];
             this.renderSubjects();
@@ -30,14 +34,27 @@ const SubjectsPage = {
     
     renderSubjects() {
         const container = document.getElementById('subjects-grid');
-        if (!container) return;
+        if (!container) {
+            console.error('❌ Subjects grid container not found');
+            return;
+        }
         
+        console.log(`🎨 Rendering ${this.subjects.length} subjects...`);
         container.innerHTML = '';
         
-        this.subjects.forEach(subject => {
+        if (this.subjects.length === 0) {
+            console.log('⚠️ No subjects to render');
+            container.innerHTML = '<div class="no-subjects">No subjects available</div>';
+            return;
+        }
+        
+        this.subjects.forEach((subject, index) => {
+            console.log(`📝 Creating card for subject ${index + 1}:`, subject);
             const card = this.createSubjectCard(subject);
             container.appendChild(card);
         });
+        
+        console.log('✅ Subjects rendered successfully');
     },
     
     createSubjectCard(subject) {
@@ -45,15 +62,22 @@ const SubjectsPage = {
         card.className = 'subject-card';
         card.dataset.subjectId = subject.id;
         
+        // Use the database fields
+        const subjectName = subject.name || 'Unknown Subject';
+        const subjectIcon = subject.icon || '📚';
+        const subjectNameHe = subject.nameHe || '';
+        const subjectColor = subject.color || '#4A90E2';
+        
         card.innerHTML = `
-            <div class="subject-icon">${subject.icon}</div>
+            <div class="subject-icon" style="background-color: ${subjectColor}20; color: ${subjectColor}">${subjectIcon}</div>
             <div class="subject-info">
-                <h3 class="subject-name">${subject.name}</h3>
-                <p class="subject-name-he">${subject.nameHe || ''}</p>
+                <h3 class="subject-name">${subjectName}</h3>
+                ${subjectNameHe ? `<p class="subject-name-he">${subjectNameHe}</p>` : ''}
             </div>
             <div class="subject-arrow">→</div>
         `;
         
+        console.log(`🎴 Created card for: ${subjectName} (ID: ${subject.id})`);
         return card;
     },
     
